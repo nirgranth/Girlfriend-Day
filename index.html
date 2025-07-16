@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy National Girlfriend Day!</title>
+    <!-- Favicon: Custom SVG heart icon for the browser tab -->
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to enhance Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Background animation */
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container-card {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px); /* Optional: Adds a subtle blur effect */
+        }
+        .heart-icon {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Animation for reason text */
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation for GIF */
+        .fade-scale-in {
+            animation: fadeScaleIn 0.6s ease-out forwards;
+        }
+        @keyframes fadeScaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-r from-pink-500 to-red-500 text-white text-center">
+
+    <div class="container-card p-8 md:p-12 rounded-xl shadow-2xl max-w-xl w-full">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
+            Happy National Girlfriend Day! <span class="heart-icon text-red-400">❤️</span>
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold italic mb-8">
+            Here's one reason why I love you:
+        </p>
+        <p id="reasonDisplay" class="text-2xl md:text-3xl font-bold mb-10 leading-relaxed fade-in-up">
+            "Your smile brightens my day."
+        </p>
+
+        <!-- GIF Section -->
+        <div class="mb-8 h-48 flex items-center justify-center"> <!-- Fixed height for consistent layout -->
+            <img id="romanticGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFjY2Q3YmFkMjU1Y2JjY2I0YjYxYmYwZDIxZTIzZTUwNTAxY2U3YSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/l2Sq29cFXoF80ADlM/giphy.gif" alt="Romantic GIF" class="rounded-lg shadow-md mx-auto max-h-full w-auto fade-scale-in" onerror="this.onerror=null;this.src='https://placehold.co/300x200/FF7E5F/FFFFFF?text=Love';">
+        </div>
+
+        <button id="nextReasonBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            Show Another Reason
+        </button>
+    </div>
+
+    <script>
+        // Array of reasons why you love her, now with matching GIF URLs
+        const reasons = [
+            { text: "Your smile brightens my day.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWtmaXRreGR5bG8zdzVxMXg1dHlrdno0ZzVxengya3QycGZyY2w3YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5QAgJGYpVcgzS/giphy.gif" }, // Cute smile
+            { text: "Your kindness inspires me.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjZoZzNvNmtsa2ZsYjM3YWE2OXVoMjR0dmEzcWFpbXkzb3lraDVjdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tKdNRw0PqN1EtLBXwq/giphy.gif" }, // Hug/comfort
+            { text: "You always know how to make me laugh.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3M3aXZhOTEwZDVxa3o0YmNjM211YWs3YTZreXB0cDI1Y3c3OTA0byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Grfv0Z2PKUGu0ixgan/giphy.gif" }, // Laughing
+            { text: "You support my dreams.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTJybzhsNzh0MG5ncjl5NHV0dHc3cGNhcXV2bHg5ODY4MHN1MnJ5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZHWqMwFEIk90Ah1xrT/giphy.gif" }, // Encouragement/cheering
+            { text: "You're amazing.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdG43ZXpqcW13bDV6dnh0Z2s5b3l1YW55dzlqMnF0c3RkM28yOW9qcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1EN39aUUAKAwOUmyGJ/giphy.gif" }, // Thoughtful listening
+            { text: "Every moment with you is a gift.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3doaTd6NmI4YXoweGF0aGVyenA0eDcyZ21temc0MjZibzRuemp0ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/At48Y4dT3oDXx64KQj/giphy.gif" }, // Gift/present
+            { text: "You make the ordinary extraordinary.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2UyYjBwd3I2MDk2OXBkcnp2am9pM2g3d2NvaW96bDF3MWN6b2M3biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dNDHFXFB9H5vqc7dau/giphy.gif" }, // Sparkle/magic
+            { text: "You're incredibly beautiful, inside and out.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmJtaDUwZDh4Z201MjNsanJ1MXQxMzgycGRyMDVpanhhODcwOHF2ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2YRW5eskZ7hAUUZYMI/giphy.gif" }, // Beauty/flower
+            { text: "You challenge me to be a better person.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXpudDZ1cjV1eXFnbTlwZ3g3YndxN285aWtnN254aW5kcXQ2cXB3OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PwCxITJWzzzbTcWsIA/giphy.gif" }, // Growth/climbing
+            { text: "Your adventurous spirit is contagious.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHdxZ211MXNpMWZhMHRyMWp6aGtxNGRmNDVwMG91Z3dmbjRsZms4aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2579DBoBNLM1qBs2zV/giphy.gif" }, // Travel/adventure
+            { text: "You make me feel like the luckiest person in the world.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHBmaG91Yjh5dTczYTFveG8zbnU0cHJtZXl0YjgzdXQ1YzhvZGR4OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3FqMfFOXpKSVtAjWnt/giphy.gif" }, // Lucky charm/four-leaf clover
+            { text: "Your passion for life is infectious.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3R2Mmw2Z3Y2bnV1dG01Z25udW14Y3ZuMjZmcjBtb3VyeXZ2ZW1jZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17XAjPucc8Qda/giphy.gif" }, // Energy/spark
+            { text: "You bring so much joy into my life.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3Rjb2ZtOWk5NzN5N3FldnFtMTd5NTd1MDRiaTVreXFtNDR1bzcybSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4b7veX9BC2bvKcNZkS/giphy.gif" }, // Happy dance/sunshine
+            { text: "You're my best friend and my greatest adventure.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTg2eXF0YXFnN29kZnkzd2F4M2dwejJsZWE2aTdteXUzdzhuY2FpcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72Fis1cjDIyky9yM/giphy.gif" }, // Two people walking hand in hand
+            { text: "You understand me like no one else.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3owZ2RnNjJ4Y3RkeDk5eDRvZ2FzN29zZ3Uxc29hd2RzazcwZzFsMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wvzdevLqbE4flfPCat/giphy.gif" }, // Brain connection/lightbulb
+            { text: "You inspire me to be better every day.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzBqMGlqbnh6aHBidjlsNjhya2IzcjNmNGMyZDdmbHRybWsxYXcyZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aypPvpyaOohrvHksDh/giphy.gif" }, // Rising sun/growth
+            { text: "Your strength and resilience are admirable.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjI1aWV2M2xzNWNiNXE1N3R3eWVtbTR5ajY1MTgwZmNrajFtcTY5NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cNI045zz1LHkbuJOdN/giphy.gif" }, // Strong arm/mountain
+            { text: "You make even the simplest moments special.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnh2M29naGc3dGVnbHYycWk3cjVyeGJydzZuYWY1ZnkzYzM1azl2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Uz0KPMN3y23bbXbl4Q/giphy.gif" }, // Sparkle/glitter
+            { text: "Your hugs are the best.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3YxY2w3dDlzM2RhbGVmeW44enpoNDJ6ejZwejYwMjhxY3pkaHpmNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0OgdJVNjbcIifqSb7U/giphy.gif" }, // Hugging couple
+            { text: "You're simply amazing in every way.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJueXJkYmtzeGljdzdxMXBhcGVjdG5rdXRjMnA5Ymxrd3F4aTM1aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YrV289VE6hcuGc04Oy/giphy.gif" }, // Star/superhero
+            { text: "Your intelligence is interesting.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXhpenp6NG9reGszYm8zY2hkbWd4ajh0MXk1cnlzdWJuM2swOTFzYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/a5viI92PAF89q/giphy.gif" }, // Brain/lightbulb
+            { text: "You make me feel safe and loved.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGZibjd0cDJpdjkwYWh1OThxanE3MnM0OTFtN2EyMGh2NmF6amVteSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d7nas8lBwqYx2lE89A/giphy.gif" }, // Cozy blanket/shelter
+            { text: "Your creativity always amazes me.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjg1aHdwbWtydWJzcW1oajY3MHp4MnBuNjVvNTN0NWUweG85ZWplaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VbEuHLBUPQm55MyqJg/giphy.gif" }, // Paintbrush/art
+            { text: "You're the most dumb person I know.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGduOW1mbWN1bXkxbjliM2o4ZDZnMmt2NDk2ejhtbXJ1cHk0M2QwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l41Ym49ppcDP6iY3C/giphy.gif" }, // Gift giving/thought bubble
+            { text: "Your positive outlook on life is inspiring.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2RzZWxtOTdibG52ZzNoYnA4YnVnem1uNm1rdGM4NjBhb29xMmE5YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/kI0mZhnqikAgg/giphy.gif" }, // Rainbow/sunshine
+            { text: "You make every day an adventure.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExempiZ2o4dnI1YzBseWxsZnl1emY3dzR3YXl6Y2c1YWEwbG8wNzB1eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DxKYNUSPwT7pgNHWl3/giphy.gif" }, // Map/compass
+            { text: "You always know how to cheer me up.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExemNuejdpY3EwM3dobWZmeG45NWFveWdhbHg4NTRvN3R0emY3c2ZtaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/11sBLVxNs7v6WA/giphy.gif" }, // Happy face/confetti
+            { text: "Your presence makes everything better.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHVqd20xMzZ6YTZyZzBrMGw2N3JqMWYxcjd4NjMyNmNnbnprNTMyayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rtRpSn30beBF9tLe3g/giphy.gif" }, // Blooming flower/sunlight
+            { text: "You're my favorite person to spend time with.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2t3OG5ueHR2N29lcXF1eXNjMnJxd3NmOTgwY2U5NTl0MTF1bzc5biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/agofTLFQsrCDqmOPhc/giphy.gif" }, // Couple relaxing
+            { text: "You teach me new things every day.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXd4cm5wOHNzanVhZHJ5Zm96cG0wcm5hamxjYXZsZ3JoMTMxaHJ4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/324ZhGo9CyX2LAcUjv/giphy.gif" }, // Book/graduation cap
+            { text: "Your dedication to everything you do is incredible.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYW00Z2Y4cTc4Z3phb2RlNHk5NnAwYXhkd3RrenEwdzFtbHVqbzk5aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d2Z4rTi11c9LRita/giphy.gif" }, // Hard work/medal
+            { text: "You have the most beautiful eyes.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDZycG9rZzI2OTB6dXEzZXRzdTFlOTBoczNicWwyd3BwY3dqc3B5cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/X8yDzDYp0neTExEmKX/giphy.gif" }, // Sparkling eyes
+            { text: "You're my calm in the storm.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTIxNWx5cTlvejk0Z2puaDN1aWk2b2tpbzM4ejV1a25zaWk0OXU3YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MToVCy7WxqgbXlphse/giphy.gif" }, // Peaceful scene/calm water
+            { text: "You make me want to be a better man/person.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXV1bDFpaHR0ZnNsbGdwbTZpa2Jpd3J2YmxrNzZzams0eWF2OHRraSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qcyEHWNAlqJWuRjYgr/giphy.gif" }, // Growth/evolution
+            { text: "Your laughter is my favorite sound.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGxzbWl1NGl0YmM2bjVubWU5OXFsNWFlOTl5NzZvYzhvZng1amRheiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ECtLJKdGj8jfy/giphy.gif" }, // Laughing face/musical notes
+            { text: "You're incredibly strong and resilient.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzhqMm8yb2k2aHJyZjRvc2xqbDI3Y294bnRwZmh4NDFlYmkxNGF4aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uim459G9DiGQXDv8zt/giphy.gif" }, // Flexing arm/phoenix
+            { text: "You make me feel completely myself.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3BrN2E2Z2R2ODZ2eHloNGc4Z2UxbnFjcGVkM3NtdmJyZ2U0bTh0NCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B1jHpBg0vYgFZUVlRN/giphy.gif" }, // Authentic self/comfortable
+            { text: "Your compassion for others is truly remarkable.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaW44OGF2dTB1MWljbHJ0YmJud2lvem9paTExOWdrN2NocHRudm05YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HSCZMUa1ao17h7l5mg/giphy.gif" }, // Helping hand/heart
+            { text: "You're the missing piece I never knew I needed.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWZ5NGI1aXp2YmRsMTkxZWJhbThxNDIzeTlrdXBoM3VrdGt1a2NncSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jIL3lq9Ah00tG/giphy.gif" }, // Puzzle piece fitting
+            { text: "You make life an incredible journey.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWJjbzJxOXg1N2hsZXU3aDRqbXB1ZWl5YTRmYThxbng5ZWE3MnJ0NCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ildLrpK7sOV9ky6NOf/giphy.gif" }, // Journey/road trip
+            { text: "Your unique perspective on the world is fascinating.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExamx5emk0aXc2c3Y2emp4ODFjcWRzNjU1ZHYzYnUwc3J5YjNzeGtsaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT4uQC6XVUYJRTIWGY/giphy.gif" }, // Kaleidoscope/different view
+            { text: "You're the reason I believe in magic.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnY3Z2owZWhyZ3Y3N3JkNHptYTJxZjBsNmo3aXZncjRveWlkZGw3ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/peUx0SaUCRlBriP84y/giphy.gif" }, // Magic wand/sparkles
+            { text: "You're my sunshine on a cloudy day.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDZtNjNpdHZnMWNqejJ1dm5obmR5eTh0c3p3azY4OXJwYmQzczhkeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/THc9OBG5aZkqUKNuq8/giphy.gif" }, // Sun peeking through clouds
+            { text: "You make my heart skip a beat.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGM4cnltbm1ndXhsbXBuaXRsamxiM3BsbHQ3YmhjbXplZ3BsZDQyOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JMRoXfw6nD7sA/giphy.gif" }, // Heart beating fast
+            { text: "You're the most baka person I've ever met.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHV2M3diNzJxczNkdDc3aWNzbngxMXlqOW5wOGNvZHlycWRxMHdwZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eAKVw3ENh0EgXKhEdU/giphy.gif" }, // Authenticity/realness
+            { text: "You make every challenge feel conquerable.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDVicG9pbmVrdjBxMHpjeWtmejV5bWkzNmo3YWF6aXBqMnI1b244YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26AHyxxCItIbFijLO/giphy.gif" }, // Mountain climbing/success
+            { text: "Your voice is music to my ears.", gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2N0aWRlbnpjY25vZGNlanZnZ3E5ZHh4cm1zenV6aTRzcWE0ZWJpbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Sl7OlpTiHi9pPPZKp4/giphy.gif" }, // Musical notes/singing
+            { text: "You're the best thing that ever happened to me.", gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExM29ub3l1cm1pZ3hyYTAza2luaHBoaWhueWVqMW0yazU4a2cwajllMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YT5xpCMCUZG55EqDmU/giphy.gif" }, // Fireworks/celebration
+            { text: "You complete me in every way.", gif: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWhnaGUydnBvYWo5YWdlY3gza2trdHNuNjExazdldm1jYjM3dGMyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dsDBmpyCI4TY9EWI4t/giphy.gif" }, // Two halves making a whole heart
+            { text: "You're my forever and always.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExczVscGx0eXhtczJucDBrZDl5NjM2dTlrYmJjaDJsdzVhMnpyN3Z0diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/J4k2wajB4GuMmA4AcU/giphy.gif" } // Infinity symbol/couple holding hands
+        ];
+
+        // Function to display a random reason and its matching GIF
+        function displayRandomReason() {
+            const reasonDisplay = document.getElementById('reasonDisplay');
+            const romanticGif = document.getElementById('romanticGif');
+
+            // Select a random reason object
+            const randomReasonObject = reasons[Math.floor(Math.random() * reasons.length)];
+
+            // Animate text
+            reasonDisplay.classList.remove('fade-in-up');
+            void reasonDisplay.offsetWidth; // Trigger reflow
+            reasonDisplay.textContent = `"${randomReasonObject.text}"`;
+            reasonDisplay.classList.add('fade-in-up');
+
+            // Animate GIF
+            romanticGif.classList.remove('fade-scale-in');
+            void romanticGif.offsetWidth; // Trigger reflow
+            romanticGif.src = randomReasonObject.gif;
+            romanticGif.classList.add('fade-scale-in');
+        }
+
+        // Event listener for the button click
+        document.getElementById('nextReasonBtn').addEventListener('click', displayRandomReason);
+
+        // Display a random reason when the page loads
+        document.addEventListener('DOMContentLoaded', displayRandomReason);
+    </script>
+</body>
+</html>
