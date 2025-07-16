@@ -137,6 +137,12 @@
             { text: "You're my forever and always.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExczVscGx0eXhtczJucDBrZDl5NjM2dTlrYmJjaDJsdzVhMnpyN3Z0diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/J4k2wajB4GuMmA4AcU/giphy.gif" } // Infinity symbol/couple holding hands
         ];
 
+        // Preload all GIFs by creating Image objects as soon as the script is parsed
+        reasons.forEach(reason => {
+            const img = new Image();
+            img.src = reason.gif;
+        });
+
         function displayRandomReason() {
             const reasonDisplay = document.getElementById('reasonDisplay');
             const romanticGif = document.getElementById('romanticGif');
@@ -178,7 +184,9 @@
         document.getElementById('nextReasonBtn').addEventListener('click', displayRandomReason);
 
         // Display a random reason when the page loads
-        document.addEventListener('DOMContentLoaded', displayRandomReason);
+        document.addEventListener('DOMContentLoaded', () => {
+            displayRandomReason();
+        });
     </script>
 </body>
 </html>
