@@ -10,6 +10,8 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            /* Initial background for loading screen */
+            background: linear-gradient(to right, #ec4899, #ef4444);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
         }
@@ -59,28 +61,66 @@
                 transform: scale(1);
             }
         }
+
+        /* Loading screen styles */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to right, #ec4899, #ef4444); /* Match body background */
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            z-index: 9999; /* Ensure it's on top */
+            transition: opacity 0.5s ease-out;
+        }
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none; /* Allow clicks through once hidden */
+        }
+        #main-content {
+            opacity: 0; /* Start hidden */
+            transition: opacity 0.5s ease-in;
+        }
+        #main-content.visible {
+            opacity: 1; /* Fade in when visible */
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-r from-pink-500 to-red-500 text-white text-center">
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        Loading...
+    </div>
 
-    <div class="container-card p-8 md:p-12 rounded-xl shadow-2xl max-w-xl w-full">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
-            Happy National Girlfriend Day! <span class="heart-icon text-red-400">❤️</span>
-        </h1>
-        <p class="text-xl md:text-2xl font-semibold italic mb-8">
-            Here's one reason why I love you:
-        </p>
-        <p id="reasonDisplay" class="text-2xl md:text-3xl font-bold mb-10 leading-relaxed fade-in-up">
-            "Your smile brightens my day."
-        </p>
+    <!-- Main Content (initially hidden) -->
+    <div id="main-content" class="flex flex-col items-center justify-center min-h-screen p-4 text-white text-center">
+        <div class="container-card p-8 md:p-12 rounded-xl shadow-2xl max-w-xl w-full">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
+                Happy National Girlfriend Day! <span class="heart-icon text-red-400">❤️</span>
+            </h1>
+            <p class="text-xl md:text-2xl font-semibold italic mb-8">
+                Here's one reason why I love you:
+            </p>
+            <p id="reasonDisplay" class="text-2xl md:text-3xl font-bold mb-10 leading-relaxed fade-in-up">
+                "Your smile brightens my day."
+            </p>
 
-        <div class="mb-8 h-48 flex items-center justify-center">
-            <img id="romanticGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFjY2Q3YmFkMjU1Y2JjY2I0YjYxYmYwZDIxZTIzZTUwNTAxY2U3YSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/l2Sq29cFXoF80ADlM/giphy.gif" alt="Romantic GIF" class="rounded-lg shadow-md mx-auto max-h-full w-auto" onerror="this.onerror=null;this.src='https://placehold.co/300x200/FF7E5F/FFFFFF?text=Love';">
+            <div class="mb-8 h-48 flex items-center justify-center">
+                <img id="romanticGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFjY2Q3YmFkMjU1Y2JjY2I0YjYxYmYwZDIxZTIzZTUwNTAxY2U3YSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/l2Sq29cFXoF80ADlM/giphy.gif" alt="Romantic GIF" class="rounded-lg shadow-md mx-auto max-h-full w-auto" onerror="this.onerror=null;this.src='https://placehold.co/300x200/FF7E5F/FFFFFF?text=Love';">
+            </div>
+
+            <button id="nextReasonBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Show Another Reason
+            </button>
         </div>
-
-        <button id="nextReasonBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-            Show Another Reason
-        </button>
     </div>
 
     <script>
@@ -137,10 +177,29 @@
             { text: "You're my forever and always.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExczVscGx0eXhtczJucDBrZDl5NjM2dTlrYmJjaDJsdzVhMnpyN3Z0diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/J4k2wajB4GuMmA4AcU/giphy.gif" } // Infinity symbol/couple holding hands
         ];
 
+        let loadedImagesCount = 0;
+        const totalImages = reasons.length;
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainContent = document.getElementById('main-content');
+
         // Preload all GIFs by creating Image objects as soon as the script is parsed
         reasons.forEach(reason => {
             const img = new Image();
             img.src = reason.gif;
+            img.onload = img.onerror = () => { // Handle both load and error to ensure count progresses
+                loadedImagesCount++;
+                if (loadedImagesCount === totalImages) {
+                    // All images loaded or attempted to load
+                    loadingScreen.classList.add('hidden'); // Fade out loading screen
+                    // After transition, remove loading screen from display flow
+                    loadingScreen.addEventListener('transitionend', () => {
+                        loadingScreen.style.display = 'none';
+                    }, { once: true });
+
+                    mainContent.classList.add('visible'); // Fade in main content
+                    displayRandomReason(); // Display the first reason after everything is loaded
+                }
+            };
         });
 
         function displayRandomReason() {
@@ -157,6 +216,7 @@
             romanticGif.src = randomReasonObject.gif;
 
             // Wait for the GIF to load before updating text and animating both
+            // Since images are preloaded, this onload should fire almost instantly from cache
             romanticGif.onload = () => {
                 // Update text content
                 reasonDisplay.textContent = `"${randomReasonObject.text}"`;
@@ -181,12 +241,8 @@
             }
         }
 
-        document.getElementById('nextReasonBtn').addEventListener('click', displayRandomReason);
-
-        // Display a random reason when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            displayRandomReason();
-        });
+        // The initial displayRandomReason call is now handled by the image preloading logic
+        // No need for DOMContentLoaded to call displayRandomReason directly anymore
     </script>
 </body>
 </html>
