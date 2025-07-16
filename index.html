@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy National Girlfriend Day!</title>
-    <!-- Favicon: Custom SVG heart icon for the browser tab -->
     <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom styles to enhance Tailwind */
         body {
             font-family: 'Inter', sans-serif;
-            /* Background animation */
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
         }
@@ -24,7 +21,7 @@
 
         .container-card {
             background-color: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px); /* Optional: Adds a subtle blur effect */
+            backdrop-filter: blur(10px);
         }
         .heart-icon {
             animation: pulse 1.5s infinite;
@@ -35,7 +32,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Animation for reason text */
         .fade-in-up {
             animation: fadeInUp 0.5s ease-out forwards;
         }
@@ -50,7 +46,6 @@
             }
         }
 
-        /* Animation for GIF */
         .fade-scale-in {
             animation: fadeScaleIn 0.6s ease-out forwards;
         }
@@ -79,9 +74,8 @@
             "Your smile brightens my day."
         </p>
 
-        <!-- GIF Section -->
-        <div class="mb-8 h-48 flex items-center justify-center"> <!-- Fixed height for consistent layout -->
-            <img id="romanticGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFjY2Q3YmFkMjU1Y2JjY2I0YjYxYmYwZDIxZTIzZTUwNTAxY2U3YSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/l2Sq29cFXoF80ADlM/giphy.gif" alt="Romantic GIF" class="rounded-lg shadow-md mx-auto max-h-full w-auto fade-scale-in" onerror="this.onerror=null;this.src='https://placehold.co/300x200/FF7E5F/FFFFFF?text=Love';">
+        <div class="mb-8 h-48 flex items-center justify-center">
+            <img id="romanticGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFjY2Q3YmFkMjU1Y2JjY2I0YjYxYmYwZDIxZTIzZTUwNTAxY2U3YSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/l2Sq29cFXoF80ADlM/giphy.gif" alt="Romantic GIF" class="rounded-lg shadow-md mx-auto max-h-full w-auto" onerror="this.onerror=null;this.src='https://placehold.co/300x200/FF7E5F/FFFFFF?text=Love';">
         </div>
 
         <button id="nextReasonBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
@@ -90,7 +84,6 @@
     </div>
 
     <script>
-        // Array of reasons why you love her, now with matching GIF URLs
         const reasons = [
             { text: "Your smile brightens my day.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWtmaXRreGR5bG8zdzVxMXg1dHlrdno0ZzVxengya3QycGZyY2w3YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5QAgJGYpVcgzS/giphy.gif" }, // Cute smile
             { text: "Your kindness inspires me.", gif: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjZoZzNvNmtsa2ZsYjM3YWE2OXVoMjR0dmEzcWFpbXkzb3lraDVjdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tKdNRw0PqN1EtLBXwq/giphy.gif" }, // Hug/comfort
@@ -144,28 +137,44 @@
             { text: "You're my forever and always.", gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExczVscGx0eXhtczJucDBrZDl5NjM2dTlrYmJjaDJsdzVhMnpyN3Z0diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/J4k2wajB4GuMmA4AcU/giphy.gif" } // Infinity symbol/couple holding hands
         ];
 
-        // Function to display a random reason and its matching GIF
         function displayRandomReason() {
             const reasonDisplay = document.getElementById('reasonDisplay');
             const romanticGif = document.getElementById('romanticGif');
 
-            // Select a random reason object
             const randomReasonObject = reasons[Math.floor(Math.random() * reasons.length)];
 
-            // Animate text
+            // Remove animation classes to reset them for both
             reasonDisplay.classList.remove('fade-in-up');
-            void reasonDisplay.offsetWidth; // Trigger reflow
-            reasonDisplay.textContent = `"${randomReasonObject.text}"`;
-            reasonDisplay.classList.add('fade-in-up');
-
-            // Animate GIF
             romanticGif.classList.remove('fade-scale-in');
-            void romanticGif.offsetWidth; // Trigger reflow
+
+            // Set the GIF source first
             romanticGif.src = randomReasonObject.gif;
-            romanticGif.classList.add('fade-scale-in');
+
+            // Wait for the GIF to load before updating text and animating both
+            romanticGif.onload = () => {
+                // Update text content
+                reasonDisplay.textContent = `"${randomReasonObject.text}"`;
+
+                // Trigger reflow for both text and GIF to ensure animations restart
+                void reasonDisplay.offsetWidth;
+                void romanticGif.offsetWidth;
+
+                // Add animation classes back to trigger animations
+                reasonDisplay.classList.add('fade-in-up');
+                romanticGif.classList.add('fade-scale-in');
+
+                // Remove the onload listener to prevent it from firing unexpectedly later
+                romanticGif.onload = null;
+            };
+
+            // Fallback for cached images where onload might not fire consistently
+            // This ensures animation still plays if onload doesn't trigger
+            if (romanticGif.complete && romanticGif.naturalHeight !== 0) {
+                // If the image is already loaded (e.g., from cache), trigger the animations immediately
+                romanticGif.onload(); // Manually call the onload handler
+            }
         }
 
-        // Event listener for the button click
         document.getElementById('nextReasonBtn').addEventListener('click', displayRandomReason);
 
         // Display a random reason when the page loads
