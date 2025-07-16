@@ -179,12 +179,12 @@
 
         // Display a random reason when the page loads
         document.addEventListener('DOMContentLoaded', () => {
+            displayRandomReason();
             // Preload all GIFs
             reasons.forEach(reason => {
                 const img = new Image();
                 img.src = reason.gif;
             });
-            displayRandomReason();
         });
     </script>
 </body>
